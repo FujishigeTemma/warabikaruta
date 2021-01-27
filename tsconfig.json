@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es2018",
+    "target": "esnext",
     "module": "esnext",
-    "strict": true,
     "moduleResolution": "node",
+    "strict": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "isolatedModules": true,
@@ -12,14 +12,12 @@
     "lib": ["esnext", "dom", "dom.iterable"],
     "skipLibCheck": true,
     "noEmit": true,
+    "types": ["vite/client"],
     "typeRoots": [
       "node_modules/@types",
       "src/types"
     ],
-    "paths": {
-      "/@/*": [
-        "src/*"
-      ]
-    }
-  }
+    "plugins": [{ "name": "@vuedx/typescript-plugin-vue" }]
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

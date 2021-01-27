@@ -8,7 +8,7 @@ module.exports = {
   },
   env: {
     browser: true,
-    es2018: true
+    es2021: true
   },
   plugins: ['@typescript-eslint'],
   extends: [

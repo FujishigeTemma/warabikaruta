@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint --ext .js,.vue src",
-    "type-check": "tsc"
+    "serve": "vite preview",
+    "build": "vuedx-typecheck . && vite build",
+    "lint": "eslint --fix --ext .js,.ts,.vue src",
+    "lint:nofix": "eslint --ext .js,.ts,.vue src",
+    "type-check": "vuedx-typecheck ."
   },
   "repository": {
     "type": "git",
@@ -24,7 +26,10 @@
     "@types/node": "^14.14.22",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
+    "@vitejs/plugin-vue": "^1.1.2",
     "@vue/compiler-sfc": "^3.0.5",
+    "@vuedx/typecheck": "^0.6.3",
+    "@vuedx/typescript-plugin-vue": "^0.6.3",
     "autoprefixer": "^10.2.3",
     "eslint": "^7.18.0",
     "eslint-config-prettier": "^7.2.0",
