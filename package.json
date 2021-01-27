@@ -1,0 +1,38 @@
+{
+  "name": "warabikaruta",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint --ext .js,.vue src",
+    "type-check": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FujishigeTemma/warabikaruta.git"
+  },
+  "author": "FujishigeTemma",
+  "bugs": {
+    "url": "https://github.com/FujishigeTemma/warabikaruta/issues"
+  },
+  "homepage": "https://github.com/FujishigeTemma/warabikaruta#readme",
+  "dependencies": {
+    "vue": "^3.0.5",
+    "vue-router": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.22",
+    "@typescript-eslint/eslint-plugin": "^4.14.1",
+    "@typescript-eslint/parser": "^4.14.1",
+    "@vue/compiler-sfc": "^3.0.5",
+    "autoprefixer": "^10.2.3",
+    "eslint": "^7.18.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-vue": "^7.5.0",
+    "prettier": "^2.2.1",
+    "sass": "^1.32.5",
+    "typescript": "^4.1.3",
+    "vite": "^2.0.0-beta.50"
+  }
+}
