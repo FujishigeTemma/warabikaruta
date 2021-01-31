@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Index from '@/pages/Index.vue'
 import Karuta from '@/pages/Karuta/Karuta.vue'
 import Gallery from '@/pages/Gallery/Gallery.vue'
 
@@ -10,7 +11,7 @@ export default createRouter({
     {
       path: '/',
       name: 'index',
-      component: Karuta
+      component: Index
     },
     {
       path: '/karuta',
