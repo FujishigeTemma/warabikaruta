@@ -28,5 +28,7 @@ export default defineComponent({
 
 <style lang="scss" module>
 .container {
+  font-size: 3rem;
+  margin: 8px;
 }
 </style>
