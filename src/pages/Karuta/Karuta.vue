@@ -1,45 +1,48 @@
 <template>
   <div :class="$style.header">
     <div v-if="state === GameState.Playing" :class="$style.card">
-      <img
-        :class="$style.img"
-        :src="'/src/assets/' + currentTarget + 'b.jpg'"
-      />
+      <img :class="$style.img" :src="`/src/assets/${currentTarget}b.jpg`" />
     </div>
-    <button v-else :class="$style.btn" @click="onStart(Timelimit['150秒'])">
-      start!
-    </button>
+    <Button v-else @click="onStart(Timelimit['150秒'])"> start! </Button>
     <timer :time="time" />
+    <menu-modal @pause="stopCountdown" @select="onSelect"></menu-modal>
   </div>
   <div :class="{ [$style.error]: failed }">お手つき</div>
-  <div v-if="state === GameState.Playing" :class="$style.cardList">
+  <div
+    v-if="state === GameState.Playing || state === GameState.Finished"
+    :class="$style.cardList"
+  >
     <div v-for="card in targets" :key="card" :class="$style.card">
       <img
         :class="$style.img"
-        :src="'/src/assets/' + card + 'f.jpg'"
+        :src="`/src/assets/${card}f.jpg`"
         @click="onTap(card)"
       />
     </div>
   </div>
+  <progress-bar :progress="(time / Timelimit['150秒']) * 100" :time="time" />
   <div v-if="state === GameState.Playing">
     獲得済み: {{ obtained.length }}枚
   </div>
   <div :class="$style.cardList">
     <div v-for="card in obtained" :key="card" :class="$style.card">
-      <img :class="$style.img" :src="'/src/assets/' + card + 'f.jpg'" />
+      <img :class="$style.img" :src="`/src/assets/${card}f.jpg`" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Button from './Button.vue'
 import Timer from './Timer.vue'
+import MenuModal from './MenuModal.vue'
+import ProgressBar from './ProgressBar.vue'
 import useTimer from './timer'
 import useKaruta, { GameState } from './karuta'
 
 export default defineComponent({
   name: 'Karuta',
-  components: { Timer },
+  components: { Button, Timer, MenuModal, ProgressBar },
   setup() {
     const { time, startCountdown, stopCountdown } = useTimer()
     const {
@@ -54,6 +57,23 @@ export default defineComponent({
       Timelimit
     } = useKaruta(time, startCountdown, stopCountdown)
 
+    const onSelect = (action: string) => {
+      if (action === 'resume') {
+        startCountdown(time.value)
+        return
+      }
+      if (action === 'quit') {
+        state.value = GameState.Playing
+        time.value = Timelimit['150秒']
+        return
+      }
+      if (action === 'restart') {
+        obtained.value = []
+        state.value = GameState.Start
+        onStart(Timelimit['150秒'])
+      }
+    }
+
     return {
       GameState,
       targets,
@@ -65,7 +85,9 @@ export default defineComponent({
       onStart,
       onFinish,
       onTap,
-      Timelimit
+      onSelect,
+      Timelimit,
+      stopCountdown
     }
   }
 })
@@ -98,33 +120,7 @@ export default defineComponent({
   object-fit: cover;
   object-position: 0% 0%;
 }
-.btn {
-  font-size: 1.6rem;
-  font-weight: 700;
-  line-height: 1.5;
-  position: relative;
-  display: inline-block;
-  padding: 0.5rem 2rem;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-  text-align: center;
-  vertical-align: middle;
-  text-decoration: none;
-  letter-spacing: 0.1em;
-  color: #212529;
-  border-radius: 0.5rem;
-  background-color: #094;
-  color: #00662d;
-  text-shadow: -1px -1px 1px #00ff71;
-  border-bottom: 5px solid #00662d;
-  margin-top: 3px;
-  border-bottom: 2px solid #00662d;
-}
+
 .error {
   color: red;
 }

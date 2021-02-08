@@ -4,36 +4,40 @@
       <img
         v-show="card !== selected"
         :class="$style.img"
-        :src="'/src/assets/' + (card + 1) + 'f.jpg'"
+        :src="`/src/assets/${card}f.jpg`"
         @click="onClick(card)"
       />
       <img
         v-show="card === selected"
         :class="$style.img"
-        :src="'/src/assets/' + (card + 1) + 'b.jpg'"
+        :src="`/src/assets/${card}b.jpg`"
         @click="onClick(card)"
       />
     </div>
+    <detail-modal :is-show="isShow" :card="selected" @close="isShow = false" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import DetailModal from './DetailModal.vue'
 
 export default defineComponent({
   name: 'Karuta',
-  components: {},
+  components: { DetailModal },
   setup() {
     const cards = [...Array(46).keys()]
-    const selected = ref(-1)
+    const selected = ref<number | undefined>(undefined)
+    const isShow = ref(false)
     const onClick = (card: number) => {
       if (card === selected.value) {
-        selected.value = -1
+        selected.value = undefined
         return
       }
       selected.value = card
+      isShow.value = true
     }
-    return { cards, selected, onClick }
+    return { cards, selected, isShow, onClick }
   }
 })
 </script>
