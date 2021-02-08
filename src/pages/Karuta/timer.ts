@@ -1,29 +1,27 @@
 import { ref } from 'vue'
 
 const useTimer = () => {
-  const time = ref({ min: 3, sec: 0 })
-  let timerId: number
+  const time = ref(150)
+  let timerId: number | undefined
   let isActive = false
   const count = () => {
-    if (time.value.sec > 0) {
-      time.value.sec--
-    } else if (time.value.min > 0) {
-      time.value.min--
-      time.value.sec = 59
+    if (time.value > 0) {
+      time.value--
     } else {
       clearInterval(timerId)
+      timerId = undefined
     }
   }
-  const startCountdown = (min: number) => {
-    if (min < 0 || isActive) return
-    time.value.min = min
-    time.value.sec = 0
-    timerId = setInterval(count, 1000)
+  const startCountdown = (timelimit: number) => {
+    if (timelimit < 0 || isActive) return
+    time.value = timelimit
+    timerId = timerId ? timerId : setInterval(count, 1000)
     isActive = true
   }
   const stopCountdown = () => {
     if (!isActive) return
     clearInterval(timerId)
+    timerId = undefined
     isActive = false
   }
   return { time, startCountdown, stopCountdown }

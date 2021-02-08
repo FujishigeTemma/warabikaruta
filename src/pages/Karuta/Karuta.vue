@@ -1,26 +1,29 @@
 <template>
   <div :class="$style.header">
-    <!-- <button @click="onClickStop">stop</button> -->
-    <div v-if="isPlaying" :class="$style.card">
+    <div v-if="state === GameState.Playing" :class="$style.card">
       <img
         :class="$style.img"
         :src="'/src/assets/' + currentTarget + 'b.jpg'"
       />
     </div>
-    <button v-else :class="$style.btn" @click="onClickStart">start!</button>
+    <button v-else :class="$style.btn" @click="onStart(Timelimit['150秒'])">
+      start!
+    </button>
     <timer :time="time" />
   </div>
-  <div v-show="displayOtetuki" :class="$style.otetuki">おてつき</div>
-  <div v-if="isPlaying" :class="$style.cardList">
-    <div v-for="card in currentTargets" :key="card" :class="$style.card">
+  <div :class="{ [$style.error]: failed }">お手つき</div>
+  <div v-if="state === GameState.Playing" :class="$style.cardList">
+    <div v-for="card in targets" :key="card" :class="$style.card">
       <img
         :class="$style.img"
         :src="'/src/assets/' + card + 'f.jpg'"
-        @click="onClickCard(card)"
+        @click="onTap(card)"
       />
     </div>
   </div>
-  <div v-if="isPlaying">獲得済み: {{ obtained.length }}枚</div>
+  <div v-if="state === GameState.Playing">
+    獲得済み: {{ obtained.length }}枚
+  </div>
   <div :class="$style.cardList">
     <div v-for="card in obtained" :key="card" :class="$style.card">
       <img :class="$style.img" :src="'/src/assets/' + card + 'f.jpg'" />
@@ -29,84 +32,40 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import Timer from './Timer.vue'
 import useTimer from './timer'
+import useKaruta, { GameState } from './karuta'
 
 export default defineComponent({
   name: 'Karuta',
   components: { Timer },
   setup() {
-    const pickRandomNubers = (list: number[], len: number) => {
-      const arr: number[] = []
-      for (let i = 1; i <= len; i++) {
-        const index = Math.floor(Math.random() * Math.floor(list.length))
-        arr.push(list[index])
-        list[index] = list[list.length - 1]
-        list.pop()
-      }
-      return arr
-    }
-    const NUMBER_OF_CARDS = 46
-    let remaining = [...Array(NUMBER_OF_CARDS).keys()]
-    let obtained: number[] = []
-    const currentTargets = ref(pickRandomNubers(remaining, 12))
-    currentTargets.value.forEach(card => remaining.splice(card, 1))
-    const currentTarget = ref(
-      currentTargets.value[Math.floor(Math.random() * Math.floor(12))]
-    )
-    const isPlaying = ref(false)
-    const displayOtetuki = ref(false)
     const { time, startCountdown, stopCountdown } = useTimer()
-    const target = ref(0)
-    const onClickStart = () => {
-      if (isPlaying.value) return
-      target.value = Math.floor(Math.random() * Math.floor(46))
-      isPlaying.value = true
-      startCountdown(3)
-    }
-    const onClickStop = () => {
-      stopCountdown()
-      isPlaying.value = false
-    }
-    const onClickCard = (card: number) => {
-      if (!isPlaying.value || (time.value.min === 0 && time.value.sec === 0))
-        return
-      if (card === currentTarget.value) {
-        const index = currentTargets.value.indexOf(card)
-        obtained.push(currentTarget.value)
-        const nextTarget = pickRandomNubers(remaining, 1)[0]
-        currentTargets.value[index] = nextTarget
-        currentTargets.value = currentTargets.value.sort(
-          () => Math.random() - 0.5
-        )
-        currentTarget.value = nextTarget
-      } else {
-        displayOtetuki.value = true
-        setTimeout(() => {
-          displayOtetuki.value = false
-        }, 1500)
-        if (time.value.sec >= 5) {
-          time.value.sec = time.value.sec - 5
-        } else {
-          time.value.min = time.value.min - 1
-          time.value.sec = time.value.sec + 60 - 5
-        }
-        if (time.value.min <= 0 || time.value.sec <= 0) {
-          time.value = { min: 0, sec: 0 }
-        }
-      }
-    }
+    const {
+      state,
+      failed,
+      obtained,
+      targets,
+      currentTarget,
+      onStart,
+      onFinish,
+      onTap,
+      Timelimit
+    } = useKaruta(time, startCountdown, stopCountdown)
+
     return {
-      currentTargets,
+      GameState,
+      targets,
       currentTarget,
       obtained,
-      isPlaying,
-      displayOtetuki,
+      state,
+      failed,
       time,
-      onClickStart,
-      onClickStop,
-      onClickCard
+      onStart,
+      onFinish,
+      onTap,
+      Timelimit
     }
   }
 })
@@ -117,12 +76,13 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 32px 0;
 }
 .cardList {
   margin: 48px;
   display: grid;
-  // grid-template-columns: repeat(auto-fill, minmax(min(100%, 146px), 1fr));
-  grid-template-columns: repeat(6, minmax(min(100%, 146px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 146px), 1fr));
+  // grid-template-columns: repeat(6, minmax(min(100%, 146px), 1fr));
   gap: 16px;
 }
 .card {
@@ -165,7 +125,7 @@ export default defineComponent({
   margin-top: 3px;
   border-bottom: 2px solid #00662d;
 }
-.otetuki {
+.error {
   color: red;
 }
 </style>

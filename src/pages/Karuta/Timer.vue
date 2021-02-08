@@ -3,19 +3,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue'
+import { defineComponent, computed } from 'vue'
 
 export default defineComponent({
   name: 'Timer',
   props: {
     time: {
-      type: Object as PropType<{ min: number; sec: number }>,
+      type: Number,
       required: true
     }
   },
   setup(props) {
     const formatedTime = computed(() =>
-      [props.time.min.toString(), props.time.sec.toString()]
+      [((props.time / 60) | 0).toString(), (props.time % 60).toString()]
         .map(str => (str.length === 1 ? '0' + str : str))
         .join(':')
     )
