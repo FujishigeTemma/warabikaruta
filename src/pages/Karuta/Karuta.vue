@@ -1,18 +1,28 @@
 <template>
+  <select-modal :is-show="showSelectModal" @set="onTimelimitSetted" />
+  <clear-modal :is-show="showClearModal" @select="onSelect" />
+  <failed-modal :is-show="showFailedModal" @select="onSelect" />
+
   <div :class="$style.header">
     <div v-if="state === GameState.Playing" :class="$style.card">
       <img :class="$style.img" :src="`/src/assets/${currentTarget}b.jpg`" />
     </div>
-    <Button v-else @click="onStart(Timelimit['150秒'])"> start! </Button>
+    <Button v-else @click="onStart(timelimit)"> start! </Button>
     <timer :time="time" />
     <menu-modal @pause="stopCountdown" @select="onSelect"></menu-modal>
   </div>
-  <div :class="{ [$style.error]: failed }">お手つき</div>
+
+  <!-- <div :class="{ [$style.error]: failed }">お手つき</div> -->
+
   <div
     v-if="state === GameState.Playing || state === GameState.Finished"
     :class="$style.cardList"
   >
-    <div v-for="card in targets" :key="card" :class="$style.card">
+    <div
+      v-for="card in targets.filter((_, i) => i % 2 == 0)"
+      :key="card"
+      :class="$style.card"
+    >
       <img
         :class="$style.img"
         :src="`/src/assets/${card}f.jpg`"
@@ -20,7 +30,24 @@
       />
     </div>
   </div>
-  <progress-bar :progress="(time / Timelimit['150秒']) * 100" :time="time" />
+  <div
+    v-if="state === GameState.Playing || state === GameState.Finished"
+    :class="$style.cardList"
+  >
+    <div
+      v-for="card in targets.filter((_, i) => i % 2 == 1)"
+      :key="card"
+      :class="$style.card"
+    >
+      <img
+        :class="$style.img"
+        :src="`/src/assets/${card}f.jpg`"
+        @click="onTap(card)"
+      />
+    </div>
+  </div>
+
+  <progress-bar :progress="(time / timelimit) * 100" :time="time" />
   <div v-if="state === GameState.Playing">
     獲得済み: {{ obtained.length }}枚
   </div>
@@ -32,19 +59,34 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import Button from './Button.vue'
 import Timer from './Timer.vue'
+import SelectModal from './SelectModal.vue'
 import MenuModal from './MenuModal.vue'
 import ProgressBar from './ProgressBar.vue'
 import useTimer from './timer'
 import useKaruta, { GameState } from './karuta'
+import ClearModal from './ClearModal.vue'
+import FailedModal from './FailedModal.vue'
 
 export default defineComponent({
   name: 'Karuta',
-  components: { Button, Timer, MenuModal, ProgressBar },
+  components: {
+    Button,
+    Timer,
+    SelectModal,
+    MenuModal,
+    ProgressBar,
+    ClearModal,
+    FailedModal
+  },
   setup() {
-    const { time, startCountdown, stopCountdown } = useTimer()
+    const showSelectModal = ref(true)
+    const showClearModal = ref(false)
+    const showFailedModal = ref(false)
+
+    const { time, startCountdown, stopCountdown } = useTimer(showFailedModal)
     const {
       state,
       failed,
@@ -55,7 +97,7 @@ export default defineComponent({
       onFinish,
       onTap,
       Timelimit
-    } = useKaruta(time, startCountdown, stopCountdown)
+    } = useKaruta(time, startCountdown, stopCountdown, showClearModal)
 
     const onSelect = (action: string) => {
       if (action === 'resume') {
@@ -70,8 +112,15 @@ export default defineComponent({
       if (action === 'restart') {
         obtained.value = []
         state.value = GameState.Start
-        onStart(Timelimit['150秒'])
+        onStart(timelimit.value)
       }
+    }
+
+    const timelimit = ref(Timelimit['150秒'])
+    const onTimelimitSetted = (t: number) => {
+      timelimit.value = t
+      time.value = t
+      showSelectModal.value = false
     }
 
     return {
@@ -86,8 +135,12 @@ export default defineComponent({
       onFinish,
       onTap,
       onSelect,
-      Timelimit,
-      stopCountdown
+      stopCountdown,
+      timelimit,
+      onTimelimitSetted,
+      showSelectModal,
+      showClearModal,
+      showFailedModal
     }
   }
 })
@@ -103,9 +156,9 @@ export default defineComponent({
 .cardList {
   margin: 48px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 146px), 1fr));
-  // grid-template-columns: repeat(6, minmax(min(100%, 146px), 1fr));
+  grid-template-columns: repeat(6, minmax(min(100%, 146px), 1fr));
   gap: 16px;
+  align-items: center;
 }
 .card {
   display: flex;

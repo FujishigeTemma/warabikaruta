@@ -60,8 +60,9 @@ export default defineComponent({
 }
 .img {
   // かるたは73:52が標準らしい
-  height: 584px;
-  width: 416px;
+  --vh: 100vh;
+  height: calc(var(--vh) * 0.5);
+  width: calc(var(--vh) * 0.5 * 52 / 73);
   // 画像サイズがまちまちなので左上を基準にトリミング
   object-fit: cover;
   object-position: 0% 0%;

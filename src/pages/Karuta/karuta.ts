@@ -8,12 +8,11 @@ export enum GameState {
   Pose,
   Finished
 }
-const Timelimit = {
+export const Timelimit = {
+  '200秒': 200,
   '150秒': 150,
   '100秒': 100,
-  '70秒': 70,
-  '45秒': 45,
-  '30秒': 30
+  '60秒': 60
 }
 
 const pickRandomCards = (list: number[], len: number) => {
@@ -34,7 +33,8 @@ const getRandomNum = (max: number) =>
 const useKaruta = (
   time: Ref<number>,
   startCountdown: (time: number) => void,
-  stopCountdown: () => void
+  stopCountdown: () => void,
+  showClearModal: Ref<boolean>
 ) => {
   const state = ref<GameState>(GameState.Start)
   const failed = ref(false)
@@ -42,10 +42,10 @@ const useKaruta = (
   const remaining = [...Array(NUMBER_OF_CARDS).keys()]
   const obtained = ref<number[]>([])
   const targets = ref(pickRandomCards(remaining, NUMBER_OF_DISPLAY_CARDS))
-  targets.value.forEach(card => remaining.splice(remaining.indexOf(card), 1))
   const currentTarget = ref(
     targets.value[getRandomNum(NUMBER_OF_DISPLAY_CARDS)]
   )
+
   const onStart = (timelimit: number) => {
     if (state.value !== GameState.Start) return
     currentTarget.value = targets.value[getRandomNum(targets.value.length)]
@@ -61,14 +61,19 @@ const useKaruta = (
     if (card === currentTarget.value) {
       obtained.value.push(currentTarget.value)
       if (remaining.length > 0) {
-        const additional = pickRandomCards(remaining, 1)[0]
-        remaining.splice(targets.value.indexOf(additional), 1)
-        targets.value[targets.value.indexOf(card)] = additional
+        targets.value[targets.value.indexOf(card)] = pickRandomCards(
+          remaining,
+          1
+        )[0]
       } else {
         targets.value.splice(targets.value.indexOf(card), 1)
+        currentTarget.value = 0
       }
       targets.value = targets.value.sort(() => Math.random() - 0.5)
       currentTarget.value = targets.value[getRandomNum(targets.value.length)]
+      if (remaining.length === 0 && targets.value.length === 0) {
+        showClearModal.value = true
+      }
     } else {
       failed.value = true
       timerId = timerId

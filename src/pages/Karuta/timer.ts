@@ -1,6 +1,6 @@
-import { ref } from 'vue'
+import { Ref, ref } from 'vue'
 
-const useTimer = () => {
+const useTimer = (showFailedModal: Ref<boolean>) => {
   const time = ref(150)
   let timerId: number | undefined
   let isActive = false
@@ -10,6 +10,7 @@ const useTimer = () => {
     } else {
       clearInterval(timerId)
       timerId = undefined
+      showFailedModal.value = true
     }
   }
   const startCountdown = (timelimit: number) => {
