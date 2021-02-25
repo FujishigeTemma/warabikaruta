@@ -14,7 +14,11 @@
         @click="onClick(card)"
       />
     </div>
-    <detail-modal :is-show="isShow" :card="selected" @close="isShow = false" />
+    <detail-modal
+      :is-shown="isShown"
+      :card="selected"
+      @close="isShown = false"
+    />
   </div>
 </template>
 
@@ -28,16 +32,16 @@ export default defineComponent({
   setup() {
     const cards = [...Array(46).keys()]
     const selected = ref<number | undefined>(undefined)
-    const isShow = ref(false)
+    const isShown = ref(false)
     const onClick = (card: number) => {
       if (card === selected.value) {
         selected.value = undefined
         return
       }
       selected.value = card
-      isShow.value = true
+      isShown.value = true
     }
-    return { cards, selected, isShow, onClick }
+    return { cards, selected, isShown, onClick }
   }
 })
 </script>

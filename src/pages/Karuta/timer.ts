@@ -11,6 +11,7 @@ const useTimer = (showFailedModal: Ref<boolean>) => {
       clearInterval(timerId)
       timerId = undefined
       showFailedModal.value = true
+      isActive = false
     }
   }
   const startCountdown = (timelimit: number) => {

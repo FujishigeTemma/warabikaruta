@@ -34,7 +34,8 @@ const useKaruta = (
   time: Ref<number>,
   startCountdown: (time: number) => void,
   stopCountdown: () => void,
-  showClearModal: Ref<boolean>
+  showClearModal: Ref<boolean>,
+  showInterval: Ref<boolean>
 ) => {
   const state = ref<GameState>(GameState.Start)
   const failed = ref(false)
@@ -71,9 +72,15 @@ const useKaruta = (
       }
       targets.value = targets.value.sort(() => Math.random() - 0.5)
       currentTarget.value = targets.value[getRandomNum(targets.value.length)]
+      if (targets.value.length === 1) {
+        onTap(targets.value[0])
+      }
       if (remaining.length === 0 && targets.value.length === 0) {
         showClearModal.value = true
+        return
       }
+      stopCountdown()
+      showInterval.value = true
     } else {
       failed.value = true
       timerId = timerId

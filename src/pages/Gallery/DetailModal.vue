@@ -1,9 +1,14 @@
 <template>
   <teleport to="#gallery-modal-target">
-    <div v-if="isShow" :class="$style.container" @click="close">
-      <div :class="$style.item" @mousedown="beforeClose">
-        <img :class="$style.img" :src="`/src/assets/${card}f.jpg`" />
-        <img :class="$style.img" :src="`/src/assets/${card}b.jpg`" />
+    <div v-if="isShown" :class="$style.container" @click="close">
+      <div :class="$style.viewBox">
+        <div :class="$style.item" @mousedown="beforeClose">
+          <img :class="$style.img" :src="`/src/assets/${card}f.jpg`" />
+          <img :class="$style.img" :src="`/src/assets/${card}b.jpg`" />
+        </div>
+        <div :class="$style.text">
+          {{ arr[card] }}
+        </div>
       </div>
     </div>
   </teleport>
@@ -11,11 +16,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import description from './description'
 
 export default defineComponent({
   name: 'DetailModal',
   props: {
-    isShow: {
+    isShown: {
       type: Boolean,
       default: false
     },
@@ -39,7 +45,8 @@ export default defineComponent({
     const beforeClose = () => {
       isImage = true
     }
-    return { close, beforeClose }
+    const arr = Object.values(description)
+    return { close, beforeClose, arr }
   }
 })
 </script>
@@ -54,6 +61,17 @@ export default defineComponent({
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.5);
+  font-family: 'M PLUS Rounded 1c', Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+.viewBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .item {
   display: flex;
@@ -66,5 +84,11 @@ export default defineComponent({
   // 画像サイズがまちまちなので左上を基準にトリミング
   object-fit: cover;
   object-position: 0% 0%;
+}
+.text {
+  max-width: 768px;
+  margin-top: 16px;
+  color: white;
+  font-size: 24px;
 }
 </style>

@@ -1,59 +1,60 @@
 <template>
-  <select-modal :is-show="showSelectModal" @set="onTimelimitSetted" />
-  <clear-modal :is-show="showClearModal" @select="onSelect" />
-  <failed-modal :is-show="showFailedModal" @select="onSelect" />
+  <select-modal :is-shown="showSelectModal" @set="onTimelimitSetted" />
+  <clear-modal :is-shown="showClearModal" @select="onSelect" />
+  <failed-modal :is-shown="showFailedModal" @select="onSelect" />
+  <interval v-if="showInterval" @done="atInterval" />
+  <div :class="$style.container">
+    <div v-if="showGameBox" :class="$style.viewBox">
+      <div :class="$style.header">
+        <div v-if="state === GameState.Playing" :class="$style.card">
+          <img :class="$style.img" :src="`/src/assets/${currentTarget}b.jpg`" />
+        </div>
+        <Button v-else @click="onStart(timelimit)"> start! </Button>
+        <timer :time="time" />
+        <menu-modal @pause="stopCountdown" @select="onSelect"></menu-modal>
+      </div>
+      <div
+        v-if="state === GameState.Playing || state === GameState.Finished"
+        :class="$style.cardList"
+      >
+        <div
+          v-for="card in targets.filter((_, i) => i % 2 == 0)"
+          :key="card"
+          :class="$style.card"
+        >
+          <img
+            :class="$style.img"
+            :src="`/src/assets/${card}f.jpg`"
+            @click="onTap(card)"
+          />
+        </div>
+      </div>
+      <div
+        v-if="state === GameState.Playing || state === GameState.Finished"
+        :class="$style.cardList"
+      >
+        <div
+          v-for="card in targets.filter((_, i) => i % 2 == 1)"
+          :key="card"
+          :class="$style.card"
+        >
+          <img
+            :class="$style.img"
+            :src="`/src/assets/${card}f.jpg`"
+            @click="onTap(card)"
+          />
+        </div>
+      </div>
 
-  <div :class="$style.header">
-    <div v-if="state === GameState.Playing" :class="$style.card">
-      <img :class="$style.img" :src="`/src/assets/${currentTarget}b.jpg`" />
-    </div>
-    <Button v-else @click="onStart(timelimit)"> start! </Button>
-    <timer :time="time" />
-    <menu-modal @pause="stopCountdown" @select="onSelect"></menu-modal>
-  </div>
-
-  <!-- <div :class="{ [$style.error]: failed }">お手つき</div> -->
-
-  <div
-    v-if="state === GameState.Playing || state === GameState.Finished"
-    :class="$style.cardList"
-  >
-    <div
-      v-for="card in targets.filter((_, i) => i % 2 == 0)"
-      :key="card"
-      :class="$style.card"
-    >
-      <img
-        :class="$style.img"
-        :src="`/src/assets/${card}f.jpg`"
-        @click="onTap(card)"
-      />
-    </div>
-  </div>
-  <div
-    v-if="state === GameState.Playing || state === GameState.Finished"
-    :class="$style.cardList"
-  >
-    <div
-      v-for="card in targets.filter((_, i) => i % 2 == 1)"
-      :key="card"
-      :class="$style.card"
-    >
-      <img
-        :class="$style.img"
-        :src="`/src/assets/${card}f.jpg`"
-        @click="onTap(card)"
-      />
-    </div>
-  </div>
-
-  <progress-bar :progress="(time / timelimit) * 100" :time="time" />
-  <div v-if="state === GameState.Playing">
-    獲得済み: {{ obtained.length }}枚
-  </div>
-  <div :class="$style.cardList">
-    <div v-for="card in obtained" :key="card" :class="$style.card">
-      <img :class="$style.img" :src="`/src/assets/${card}f.jpg`" />
+      <progress-bar :progress="(time / timelimit) * 100" :time="time" />
+      <div v-if="state === GameState.Playing">
+        獲得済み: {{ obtained.length }}枚
+      </div>
+      <div :class="$style.cardList">
+        <div v-for="card in obtained" :key="card" :class="$style.card">
+          <img :class="$style.img" :src="`/src/assets/${card}f.jpg`" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -69,6 +70,7 @@ import useTimer from './timer'
 import useKaruta, { GameState } from './karuta'
 import ClearModal from './ClearModal.vue'
 import FailedModal from './FailedModal.vue'
+import Interval from './Interval.vue'
 
 export default defineComponent({
   name: 'Karuta',
@@ -79,12 +81,15 @@ export default defineComponent({
     MenuModal,
     ProgressBar,
     ClearModal,
-    FailedModal
+    FailedModal,
+    Interval
   },
   setup() {
     const showSelectModal = ref(true)
     const showClearModal = ref(false)
     const showFailedModal = ref(false)
+    const showGameBox = ref(false)
+    const showInterval = ref(false)
 
     const { time, startCountdown, stopCountdown } = useTimer(showFailedModal)
     const {
@@ -97,7 +102,13 @@ export default defineComponent({
       onFinish,
       onTap,
       Timelimit
-    } = useKaruta(time, startCountdown, stopCountdown, showClearModal)
+    } = useKaruta(
+      time,
+      startCountdown,
+      stopCountdown,
+      showClearModal,
+      showInterval
+    )
 
     const onSelect = (action: string) => {
       if (action === 'resume') {
@@ -112,7 +123,10 @@ export default defineComponent({
       if (action === 'restart') {
         obtained.value = []
         state.value = GameState.Start
+        time.value = timelimit.value
         onStart(timelimit.value)
+        showClearModal.value = false
+        showFailedModal.value = false
       }
     }
 
@@ -121,6 +135,12 @@ export default defineComponent({
       timelimit.value = t
       time.value = t
       showSelectModal.value = false
+      showGameBox.value = true
+    }
+
+    const atInterval = () => {
+      showInterval.value = false
+      startCountdown(time.value)
     }
 
     return {
@@ -140,13 +160,31 @@ export default defineComponent({
       onTimelimitSetted,
       showSelectModal,
       showClearModal,
-      showFailedModal
+      showFailedModal,
+      showGameBox,
+      showInterval,
+      atInterval
     }
   }
 })
 </script>
 
 <style lang="scss" module>
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.viewBox {
+  width: 1024px;
+  height: 768px;
+  border-radius: 4px;
+  box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%),
+    0 1px 5px 0 rgb(0 0 0 / 12%);
+  overflow-y: scroll;
+}
 .header {
   display: flex;
   justify-content: center;
@@ -172,9 +210,5 @@ export default defineComponent({
   // 画像サイズがまちまちなので左上を基準にトリミング
   object-fit: cover;
   object-position: 0% 0%;
-}
-
-.error {
-  color: red;
 }
 </style>
