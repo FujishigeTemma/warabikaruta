@@ -4,7 +4,7 @@
       <div :class="$style.modal">
         <div :class="$style.title">
           <div :class="$style.content">GAME CLEAR</div>
-          <img :class="$style.character" src="../../assets/warabi-kun2.png" />
+          <img :class="$style.character" src="/images/warabi-kun2.png" />
         </div>
         <div :class="$style.next">
           <div :class="$style.item" @click="onClick('restart')">

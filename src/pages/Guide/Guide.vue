@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.container">
-    <img src="/src/assets/guide.png" />
+    <img src="/images/guide.png" />
   </div>
 </template>
 

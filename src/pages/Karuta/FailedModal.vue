@@ -5,7 +5,7 @@
         <div :class="$style.title">GAME OVER</div>
         <div :class="$style.comment">
           <div :class="$style.content">残念...もう一度遊ぶ？</div>
-          <img :class="$style.character" src="../../assets/warabi-kun3.png" />
+          <img :class="$style.character" src="/images/warabi-kun3.png" />
         </div>
         <div :class="$style.next">
           <div :class="$style.item" @click="onClick('restart')">

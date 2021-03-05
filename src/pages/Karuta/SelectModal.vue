@@ -6,7 +6,7 @@
           <div :class="$style.content">
             難易度を選んでね！<br />すべてのモードでクリアできるかな？
           </div>
-          <img :class="$style.character" src="../../assets/warabi-kun1.png" />
+          <img :class="$style.character" src="/images/warabi-kun1.png" />
         </div>
         <div :class="$style.difficultyList">
           <div :class="$style.item" @click="onClick(60)">

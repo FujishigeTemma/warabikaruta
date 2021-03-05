@@ -4,13 +4,13 @@
       <img
         v-show="card !== selected"
         :class="$style.img"
-        :src="`/src/assets/${card}f.jpg`"
+        :src="`/images/${card}f.jpg`"
         @click="onClick(card)"
       />
       <img
         v-show="card === selected"
         :class="$style.img"
-        :src="`/src/assets/${card}b.jpg`"
+        :src="`/images/${card}b.jpg`"
         @click="onClick(card)"
       />
     </div>

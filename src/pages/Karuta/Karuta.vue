@@ -7,7 +7,7 @@
     <div v-if="showGameBox" :class="$style.viewBox">
       <div :class="$style.header">
         <div v-if="state === GameState.Playing" :class="$style.card">
-          <img :class="$style.img" :src="`/src/assets/${currentTarget}b.jpg`" />
+          <img :class="$style.img" :src="`/images/${currentTarget}b.jpg`" />
         </div>
         <Button v-else @click="onStart(timelimit)"> start! </Button>
         <timer :time="time" />
@@ -24,7 +24,7 @@
         >
           <img
             :class="$style.img"
-            :src="`/src/assets/${card}f.jpg`"
+            :src="`/images/${card}f.jpg`"
             @click="onTap(card)"
           />
         </div>
@@ -40,7 +40,7 @@
         >
           <img
             :class="$style.img"
-            :src="`/src/assets/${card}f.jpg`"
+            :src="`/images/${card}f.jpg`"
             @click="onTap(card)"
           />
         </div>
@@ -52,7 +52,7 @@
       </div>
       <div :class="$style.cardList">
         <div v-for="card in obtained" :key="card" :class="$style.card">
-          <img :class="$style.img" :src="`/src/assets/${card}f.jpg`" />
+          <img :class="$style.img" :src="`/images/${card}f.jpg`" />
         </div>
       </div>
     </div>
@@ -193,8 +193,8 @@ export default defineComponent({
 }
 .cardList {
   margin: 48px;
-  display: grid;
-  grid-template-columns: repeat(6, minmax(min(100%, 146px), 1fr));
+  display: flex;
+  justify-content: space-around;
   gap: 16px;
   align-items: center;
 }

@@ -3,8 +3,8 @@
     <div v-if="isShown" :class="$style.container" @click="close">
       <div :class="$style.viewBox">
         <div :class="$style.item" @mousedown="beforeClose">
-          <img :class="$style.img" :src="`/src/assets/${card}f.jpg`" />
-          <img :class="$style.img" :src="`/src/assets/${card}b.jpg`" />
+          <img :class="$style.img" :src="`/images/${card}f.jpg`" />
+          <img :class="$style.img" :src="`/images/${card}b.jpg`" />
         </div>
         <div :class="$style.text">
           {{ arr[card] }}
