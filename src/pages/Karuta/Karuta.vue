@@ -3,6 +3,7 @@
   <clear-modal :is-shown="showClearModal" @select="onSelect" />
   <failed-modal :is-shown="showFailedModal" @select="onSelect" />
   <interval v-if="showInterval" @done="atInterval" />
+  <miss-modal v-if="failed" @done="afterPenalty" />
   <div :class="$style.container">
     <div v-if="showGameBox" :class="$style.viewBox">
       <div :class="$style.header">
@@ -50,7 +51,7 @@
       <div v-if="state === GameState.Playing">
         獲得済み: {{ obtained.length }}枚
       </div>
-      <div :class="$style.cardList">
+      <div :class="$style.cardListObtained">
         <div v-for="card in obtained" :key="card" :class="$style.card">
           <img :class="$style.img" :src="`/images/${card}f.jpg`" />
         </div>
@@ -71,6 +72,8 @@ import useKaruta, { GameState } from './karuta'
 import ClearModal from './ClearModal.vue'
 import FailedModal from './FailedModal.vue'
 import Interval from './Interval.vue'
+import playAudio from './Player'
+import MissModal from './MissModal.vue'
 
 export default defineComponent({
   name: 'Karuta',
@@ -82,7 +85,8 @@ export default defineComponent({
     ProgressBar,
     ClearModal,
     FailedModal,
-    Interval
+    Interval,
+    MissModal
   },
   setup() {
     const showSelectModal = ref(true)
@@ -141,6 +145,11 @@ export default defineComponent({
     const atInterval = () => {
       showInterval.value = false
       startCountdown(time.value)
+      playAudio(`/audio/${currentTarget.value}.mp3`)
+    }
+
+    const afterPenalty = () => {
+      failed.value = false
     }
 
     return {
@@ -196,6 +205,12 @@ export default defineComponent({
   display: flex;
   justify-content: space-around;
   gap: 16px;
+  align-items: center;
+}
+.cardListObtained {
+  margin: 48px;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
 }
 .card {

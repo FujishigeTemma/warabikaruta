@@ -64,7 +64,6 @@ export default defineComponent({
   font-family: 'M PLUS Rounded 1c', Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 .viewBox {

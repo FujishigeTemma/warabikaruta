@@ -1,4 +1,5 @@
 import { ref, Ref } from 'vue'
+import playAudio from './Player'
 
 const NUMBER_OF_CARDS = 46
 const NUMBER_OF_DISPLAY_CARDS = 12
@@ -47,11 +48,13 @@ const useKaruta = (
     targets.value[getRandomNum(NUMBER_OF_DISPLAY_CARDS)]
   )
 
-  const onStart = (timelimit: number) => {
+  const onStart = async (timelimit: number) => {
     if (state.value !== GameState.Start) return
     currentTarget.value = targets.value[getRandomNum(targets.value.length)]
+    await playAudio('/audio/start.mp3')
     state.value = GameState.Playing
     startCountdown(timelimit)
+    playAudio(`/audio/${currentTarget.value}.mp3`)
   }
   const onFinish = () => {
     stopCountdown()
@@ -76,7 +79,9 @@ const useKaruta = (
         onTap(targets.value[0])
       }
       if (remaining.length === 0 && targets.value.length === 0) {
+        stopCountdown()
         showClearModal.value = true
+        currentTarget.value = 0
         return
       }
       stopCountdown()

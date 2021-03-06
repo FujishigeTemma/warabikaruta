@@ -10,16 +10,16 @@
         </div>
         <div :class="$style.difficultyList">
           <div :class="$style.item" @click="onClick(60)">
-            {{ '鬼 ' + Timelimit['60秒'] + '秒' }}
+            {{ '鬼 六〇秒' }}
           </div>
           <div :class="$style.item" @click="onClick(100)">
-            {{ '難しい ' + Timelimit['100秒'] + '秒' }}
+            {{ '難しい 一〇〇秒' }}
           </div>
           <div :class="$style.item" @click="onClick(150)">
-            {{ '普通 ' + Timelimit['150秒'] + '秒' }}
+            {{ '普通 一五〇秒' }}
           </div>
           <div :class="$style.item" @click="onClick(200)">
-            {{ '簡単 ' + Timelimit['200秒'] + '秒' }}
+            {{ '簡単 二〇〇秒' }}
           </div>
         </div>
       </div>
