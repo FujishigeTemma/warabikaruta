@@ -36,8 +36,9 @@ const useKaruta = (
   startCountdown: (time: number) => void,
   stopCountdown: () => void,
   showClearModal: Ref<boolean>,
-  showInterval: Ref<boolean>
-) => {
+  showInterval: Ref<boolean>,
+  nowPlaying: Ref<Promise<unknown> | undefined>
+  ) => {
   const state = ref<GameState>(GameState.Start)
   const failed = ref(false)
   let timerId: number | undefined
@@ -54,7 +55,7 @@ const useKaruta = (
     await playAudio('/audio/start.mp3')
     state.value = GameState.Playing
     startCountdown(timelimit)
-    playAudio(`/audio/${currentTarget.value}.mp3`)
+    nowPlaying.value = playAudio(`/audio/${currentTarget.value}.mp3`)
   }
   const onFinish = () => {
     stopCountdown()

@@ -9,6 +9,7 @@
       <div :class="$style.header">
         <div v-if="state === GameState.Playing" :class="$style.card">
           <img :class="$style.img" :src="`/images/${currentTarget}b.jpg`" />
+          <div v-if="showInterval" :class="$style.mask" />
         </div>
         <Button v-else @click="onStart(timelimit)"> start! </Button>
         <timer :time="time" />
@@ -28,6 +29,7 @@
             :src="`/images/${card}f.jpg`"
             @click="onTap(card)"
           />
+          <div v-if="showInterval" :class="$style.mask" />
         </div>
       </div>
       <div
@@ -44,6 +46,7 @@
             :src="`/images/${card}f.jpg`"
             @click="onTap(card)"
           />
+          <div v-if="showInterval" :class="$style.mask" />
         </div>
       </div>
 
@@ -59,6 +62,8 @@
     </div>
   </div>
 </template>
+
+
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
@@ -95,6 +100,8 @@ export default defineComponent({
     const showGameBox = ref(false)
     const showInterval = ref(false)
 
+    const nowPlaying = ref<Promise<unknown> | undefined>(undefined)
+
     const { time, startCountdown, stopCountdown } = useTimer(showFailedModal)
     const {
       state,
@@ -111,7 +118,8 @@ export default defineComponent({
       startCountdown,
       stopCountdown,
       showClearModal,
-      showInterval
+      showInterval,
+      nowPlaying
     )
 
     const onSelect = (action: string) => {
@@ -142,10 +150,13 @@ export default defineComponent({
       showGameBox.value = true
     }
 
-    const atInterval = () => {
+    const atInterval = async () => {
+      if (nowPlaying.value) {
+        await nowPlaying.value
+      }
       showInterval.value = false
       startCountdown(time.value)
-      playAudio(`/audio/${currentTarget.value}.mp3`)
+      nowPlaying.value = playAudio(`/audio/${currentTarget.value}.mp3`)
     }
 
     const afterPenalty = () => {
@@ -172,7 +183,8 @@ export default defineComponent({
       showFailedModal,
       showGameBox,
       showInterval,
-      atInterval
+      atInterval,
+      afterPenalty
     }
   }
 })
@@ -217,6 +229,12 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   cursor: pointer;
+}
+.mask {
+  position: absolute;
+  height: 146px;
+  width: 104px;
+  background: white;
 }
 .img {
   // かるたは73:52が標準らしい
