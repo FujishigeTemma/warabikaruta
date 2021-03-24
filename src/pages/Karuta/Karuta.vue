@@ -7,9 +7,12 @@
   <div :class="$style.container">
     <div v-if="showGameBox" :class="$style.viewBox">
       <div :class="$style.header">
-        <div v-if="state === GameState.Playing" :class="$style.card">
+        <div
+          v-if="state === GameState.Playing"
+          :class="$style.card"
+          :hidden="showInterval"
+        >
           <img :class="$style.img" :src="`/images/${currentTarget}b.jpg`" />
-          <div v-if="showInterval" :class="$style.mask" />
         </div>
         <Button v-else @click="onStart(timelimit)"> start! </Button>
         <timer :time="time" />
@@ -23,13 +26,13 @@
           v-for="card in targets.filter((_, i) => i % 2 == 0)"
           :key="card"
           :class="$style.card"
+          :hidden="showInterval"
         >
           <img
             :class="$style.img"
             :src="`/images/${card}f.jpg`"
             @click="onTap(card)"
           />
-          <div v-if="showInterval" :class="$style.mask" />
         </div>
       </div>
       <div
@@ -40,13 +43,13 @@
           v-for="card in targets.filter((_, i) => i % 2 == 1)"
           :key="card"
           :class="$style.card"
+          :hidden="showInterval"
         >
           <img
             :class="$style.img"
             :src="`/images/${card}f.jpg`"
             @click="onTap(card)"
           />
-          <div v-if="showInterval" :class="$style.mask" />
         </div>
       </div>
 
@@ -247,13 +250,11 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   cursor: pointer;
+  &[hidden] {
+    visibility: hidden;
+  }
 }
-.mask {
-  position: absolute;
-  height: 146px;
-  width: 104px;
-  background: white;
-}
+
 .img {
   // かるたは73:52が標準らしい
   height: 146px;

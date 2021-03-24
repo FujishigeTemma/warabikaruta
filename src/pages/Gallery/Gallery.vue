@@ -49,7 +49,7 @@ export default defineComponent({
 <style lang="scss" module>
 .container {
   padding: 48px;
-  height: 100vh;;
+  height: 100vh;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 146px), 1fr));
   gap: 16px;
