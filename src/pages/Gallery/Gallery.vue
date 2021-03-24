@@ -48,10 +48,30 @@ export default defineComponent({
 
 <style lang="scss" module>
 .container {
-  margin: 48px;
+  padding: 48px;
+  height: 100vh;;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 146px), 1fr));
   gap: 16px;
+  background: linear-gradient(
+      0deg,
+      rgba(139, 126, 74, 0.8),
+      rgba(168, 157, 95, 0.6) 10%,
+      rgba(168, 157, 95, 0.2) 90%,
+      rgba(139, 126, 74, 0.8)
+    ),
+    linear-gradient(
+      90deg,
+      #f9daa4,
+      #f9daa4 25%,
+      #cea660 25%,
+      #cea660 50%,
+      #ddba78 50%,
+      #ddba78 75%,
+      #c69f5a 75%,
+      #c69f5a
+    );
+  background-size: 4px 20px;
 }
 .card {
   display: flex;

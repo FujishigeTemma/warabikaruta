@@ -9,17 +9,17 @@
           <img :class="$style.character" src="/images/warabi-kun1.png" />
         </div>
         <div :class="$style.difficultyList">
-          <div :class="$style.item" @click="onClick(60)">
-            {{ '鬼 六〇秒' }}
-          </div>
-          <div :class="$style.item" @click="onClick(100)">
-            {{ '難しい 一〇〇秒' }}
+          <div :class="$style.item" @click="onClick(200)">
+            {{ '簡単 二〇〇秒' }}
           </div>
           <div :class="$style.item" @click="onClick(150)">
             {{ '普通 一五〇秒' }}
           </div>
-          <div :class="$style.item" @click="onClick(200)">
-            {{ '簡単 二〇〇秒' }}
+          <div :class="$style.item" @click="onClick(100)">
+            {{ '難しい 一〇〇秒' }}
+          </div>
+          <div :class="$style.item" @click="onClick(60)">
+            {{ '鬼 六〇秒' }}
           </div>
         </div>
       </div>

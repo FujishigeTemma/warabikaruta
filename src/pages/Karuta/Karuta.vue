@@ -63,8 +63,6 @@
   </div>
 </template>
 
-
-
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import Button from './Button.vue'
@@ -197,6 +195,25 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
+  background: linear-gradient(
+      0deg,
+      rgba(139, 126, 74, 0.8),
+      rgba(168, 157, 95, 0.6) 10%,
+      rgba(168, 157, 95, 0.2) 90%,
+      rgba(139, 126, 74, 0.8)
+    ),
+    linear-gradient(
+      90deg,
+      #f9daa4,
+      #f9daa4 25%,
+      #cea660 25%,
+      #cea660 50%,
+      #ddba78 50%,
+      #ddba78 75%,
+      #c69f5a 75%,
+      #c69f5a
+    );
+  background-size: 4px 20px;
 }
 .viewBox {
   width: 1024px;
@@ -205,6 +222,7 @@ export default defineComponent({
   box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%),
     0 1px 5px 0 rgb(0 0 0 / 12%);
   overflow-y: scroll;
+  background: rgba(256, 256, 256, 0.7);
 }
 .header {
   display: flex;
