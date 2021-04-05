@@ -54,6 +54,12 @@
       </div>
 
       <progress-bar :progress="(time / timelimit) * 100" :time="time" />
+      <div
+        v-if="state === GameState.Start && nowPlaying"
+        :class="$style.caption"
+      >
+        〜空札詠み中〜<br />ワラビー君は<br />蕨のかわいい<br />マスコット
+      </div>
       <div v-if="state === GameState.Playing">
         獲得済み: {{ obtained.length }}枚
       </div>
@@ -140,6 +146,7 @@ export default defineComponent({
         onStart(timelimit.value)
         showClearModal.value = false
         showFailedModal.value = false
+        nowPlaying.value = undefined
       }
     }
 
@@ -154,6 +161,7 @@ export default defineComponent({
     const atInterval = async () => {
       if (nowPlaying.value) {
         await nowPlaying.value
+        nowPlaying.value = undefined
       }
       showInterval.value = false
       startCountdown(time.value)
@@ -185,7 +193,8 @@ export default defineComponent({
       showGameBox,
       showInterval,
       atInterval,
-      afterPenalty
+      afterPenalty,
+      nowPlaying
     }
   }
 })
@@ -222,10 +231,7 @@ export default defineComponent({
   width: 1024px;
   height: 768px;
   border-radius: 4px;
-  box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%),
-    0 1px 5px 0 rgb(0 0 0 / 12%);
   overflow-y: scroll;
-  background: rgba(256, 256, 256, 0.7);
 }
 .header {
   display: flex;
@@ -254,7 +260,6 @@ export default defineComponent({
     visibility: hidden;
   }
 }
-
 .img {
   // かるたは73:52が標準らしい
   height: 146px;
@@ -262,5 +267,15 @@ export default defineComponent({
   // 画像サイズがまちまちなので左上を基準にトリミング
   object-fit: cover;
   object-position: 0% 0%;
+}
+.caption {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100%;
+  padding: 16px;
+  font-size: 64px;
+  writing-mode: vertical-rl;
+  line-height: 3em;
 }
 </style>

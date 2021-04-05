@@ -4,7 +4,7 @@
       <div :class="$style.modal">
         <div :class="$style.comment">
           <div :class="$style.content">
-            難易度を選んでね！<br />すべてのモードでクリアできるかな？
+            音声をONにして、難易度を選んでね！<br />すべてのモードでクリアできるかな？
           </div>
           <img :class="$style.character" src="/images/warabi-kun1.png" />
         </div>

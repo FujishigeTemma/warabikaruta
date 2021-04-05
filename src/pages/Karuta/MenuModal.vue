@@ -9,7 +9,7 @@
         </div>
         <router-link to="/">
           <div :class="$style.item" @click="onClick('quit')">
-            ゲームを辞める
+            トップ画面に戻る
           </div>
         </router-link>
       </div>
@@ -78,5 +78,13 @@ export default defineComponent({
   &:hover {
     text-decoration: underline;
   }
+}
+
+.btn {
+  border-radius: 4px;
+  border: 1px solid #2c3e50;
+  padding: 4px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.4);
 }
 </style>
