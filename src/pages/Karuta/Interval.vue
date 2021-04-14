@@ -1,7 +1,8 @@
 <template>
   <teleport to="#game-modal-target">
     <div :class="$style.container">
-      <div :class="$style.modal">{{ time + 1 }}</div>
+      <div v-if="!waiting" :class="$style.modal">{{ time + 1 }}</div>
+      <div v-else :class="$style.modal">札詠み中</div>
     </div>
   </teleport>
 </template>
@@ -16,19 +17,22 @@ export default defineComponent({
   setup(props, context) {
     const time = ref(2)
     let timerId: number
+    const waiting = ref(false)
     const count = () => {
       if (time.value > 0) {
         time.value--
       } else {
         clearInterval(timerId)
         context.emit('done')
+        waiting.value = true
       }
     }
     onMounted(() => {
       timerId = setInterval(count, 1000)
     })
     return {
-      time
+      time,
+      waiting
     }
   }
 })

@@ -80,7 +80,7 @@ import SelectModal from './SelectModal.vue'
 import MenuModal from './MenuModal.vue'
 import ProgressBar from './ProgressBar.vue'
 import useTimer from './timer'
-import useKaruta, { GameState } from './karuta'
+import useKaruta, { GameState, pickRandomCards } from './karuta'
 import ClearModal from './ClearModal.vue'
 import FailedModal from './FailedModal.vue'
 import Interval from './Interval.vue'
@@ -137,10 +137,12 @@ export default defineComponent({
       if (action === 'quit') {
         state.value = GameState.Playing
         time.value = Timelimit['150秒']
+        nowPlaying.value = undefined
         return
       }
       if (action === 'restart') {
         obtained.value = []
+        targets.value = pickRandomCards([...Array(4).keys()], 4)
         state.value = GameState.Start
         time.value = timelimit.value
         onStart(timelimit.value)

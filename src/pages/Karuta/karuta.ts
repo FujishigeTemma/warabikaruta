@@ -1,8 +1,8 @@
 import { ref, Ref } from 'vue'
 import playAudio from './Player'
 
-const NUMBER_OF_CARDS = 46
-const NUMBER_OF_DISPLAY_CARDS = 12
+const NUMBER_OF_CARDS = 4
+const NUMBER_OF_DISPLAY_CARDS = 4
 export enum GameState {
   Start,
   Playing,
@@ -16,7 +16,7 @@ export const Timelimit = {
   '60秒': 60
 }
 
-const pickRandomCards = (list: number[], len: number) => {
+export const pickRandomCards = (list: number[], len: number) => {
   const arr: number[] = []
   for (let i = 1; i <= len; i++) {
     const index = Math.floor(Math.random() * Math.floor(list.length))
@@ -42,9 +42,9 @@ const useKaruta = (
   const state = ref<GameState>(GameState.Start)
   const failed = ref(false)
   let timerId: number | undefined
-  const remaining = [...Array(NUMBER_OF_CARDS).keys()]
+  const remaining = ref<number[]>([...Array(NUMBER_OF_CARDS).keys()])
   const obtained = ref<number[]>([])
-  const targets = ref(pickRandomCards(remaining, NUMBER_OF_DISPLAY_CARDS))
+  const targets = ref(pickRandomCards(remaining.value, NUMBER_OF_DISPLAY_CARDS))
   const currentTarget = ref(
     targets.value[getRandomNum(NUMBER_OF_DISPLAY_CARDS)]
   )
@@ -66,9 +66,9 @@ const useKaruta = (
     if (state.value !== GameState.Playing || time.value <= 0) return
     if (card === currentTarget.value) {
       obtained.value.push(currentTarget.value)
-      if (remaining.length > 0) {
+      if (remaining.value.length > 0) {
         targets.value[targets.value.indexOf(card)] = pickRandomCards(
-          remaining,
+          remaining.value,
           1
         )[0]
       } else {
@@ -80,7 +80,7 @@ const useKaruta = (
       if (targets.value.length === 1) {
         onTap(targets.value[0])
       }
-      if (remaining.length === 0 && targets.value.length === 0) {
+      if (remaining.value.length === 0 && targets.value.length === 0) {
         stopCountdown()
         showClearModal.value = true
         currentTarget.value = 0
@@ -106,6 +106,7 @@ const useKaruta = (
   return {
     state,
     failed,
+    remaining,
     obtained,
     targets,
     currentTarget,
