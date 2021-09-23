@@ -69,24 +69,24 @@
         </div>
       </div>
     </div>
+    <router-link to="/" :class="$style.button">戻る</router-link>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
 import Button from './Button.vue'
-import Timer from './Timer.vue'
-import SelectModal from './SelectModal.vue'
-import MenuModal from './MenuModal.vue'
-import ProgressBar from './ProgressBar.vue'
-import useTimer from './timer'
-import useKaruta, { GameState, pickRandomCards } from './karuta'
 import ClearModal from './ClearModal.vue'
 import FailedModal from './FailedModal.vue'
 import Interval from './Interval.vue'
-import playAudio from './Player'
+import MenuModal from './MenuModal.vue'
 import MissModal from './MissModal.vue'
-
+import playAudio from './Player'
+import ProgressBar from './ProgressBar.vue'
+import SelectModal from './SelectModal.vue'
+import Timer from './Timer.vue'
+import useKaruta, { GameState, pickRandomCards } from './karuta'
+import useTimer from './timer'
+import { defineComponent, ref } from 'vue'
 export default defineComponent({
   name: 'Karuta',
   components: {
@@ -106,9 +106,7 @@ export default defineComponent({
     const showFailedModal = ref(false)
     const showGameBox = ref(false)
     const showInterval = ref(false)
-
     const nowPlaying = ref<Promise<unknown> | undefined>(undefined)
-
     const { time, startCountdown, stopCountdown } = useTimer(showFailedModal)
     const {
       state,
@@ -128,7 +126,6 @@ export default defineComponent({
       showInterval,
       nowPlaying
     )
-
     const onSelect = (action: string) => {
       if (action === 'resume') {
         startCountdown(time.value)
@@ -151,7 +148,6 @@ export default defineComponent({
         nowPlaying.value = undefined
       }
     }
-
     const timelimit = ref(Timelimit['150秒'])
     const onTimelimitSetted = (t: number) => {
       timelimit.value = t
@@ -159,7 +155,6 @@ export default defineComponent({
       showSelectModal.value = false
       showGameBox.value = true
     }
-
     const atInterval = async () => {
       if (nowPlaying.value) {
         await nowPlaying.value
@@ -169,11 +164,9 @@ export default defineComponent({
       startCountdown(time.value)
       nowPlaying.value = playAudio(`/audio/${currentTarget.value}.mp3`)
     }
-
     const afterPenalty = () => {
       failed.value = false
     }
-
     return {
       GameState,
       targets,
@@ -279,5 +272,14 @@ export default defineComponent({
   font-size: 64px;
   writing-mode: vertical-rl;
   line-height: 3em;
+}
+.button {
+  position: fixed;
+  font-size: 2rem;
+  left: 32px;
+  bottom: 32px;
+  border-radius: 8px;
+  background-color: #e0edff;
+  padding: 8px 28px;
 }
 </style>

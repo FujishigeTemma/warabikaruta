@@ -1,8 +1,8 @@
-import { ref, Ref } from 'vue'
 import playAudio from './Player'
+import { ref, Ref } from 'vue'
 
-const NUMBER_OF_CARDS = 4
-const NUMBER_OF_DISPLAY_CARDS = 4
+const NUMBER_OF_CARDS = 46
+const NUMBER_OF_DISPLAY_CARDS = 12
 export enum GameState {
   Start,
   Playing,

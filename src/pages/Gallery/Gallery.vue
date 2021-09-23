@@ -21,6 +21,7 @@
         @close="isShown = false"
       />
     </div>
+    <router-link to="/" :class="$style.button">戻る</router-link>
     <div :class="$style.comment">
       <div :class="$style.content">
         気になった札をクリックしてみてね♪<br />僕の札も見てね〜♪
@@ -31,9 +32,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
 import DetailModal from './DetailModal.vue'
-
+import { defineComponent, ref } from 'vue'
 export default defineComponent({
   name: 'Karuta',
   components: { DetailModal },
@@ -94,6 +94,7 @@ export default defineComponent({
   // 画像サイズがまちまちなので左上を基準にトリミング
   object-fit: cover;
   object-position: 0% 0%;
+  cursor: pointer;
 }
 .comment {
   display: flex;
@@ -125,5 +126,14 @@ export default defineComponent({
 .character {
   height: 124px;
   margin: 8px;
+}
+.button {
+  position: fixed;
+  font-size: 2rem;
+  left: 32px;
+  bottom: 32px;
+  border-radius: 8px;
+  background-color: #e0edff;
+  padding: 8px 28px;
 }
 </style>
